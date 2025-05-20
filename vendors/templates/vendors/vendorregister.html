@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as Vendor | Wanderlust Tours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .vendor-register-container {
+            background: linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(79,70,229,0.05) 100%);
+        }
+        
+        .input-field:focus {
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.2);
+        }
+        
+        .file-upload {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .file-upload.dragover {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .progress-step {
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            color: #64748b;
+            font-weight: 600;
+        }
+        
+        .progress-step.active {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .progress-step.completed {
+            background-color: #4f46e5;
+            color: white;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="vendor-register-container max-w-4xl w-full rounded-2xl overflow-hidden shadow-xl bg-white">
+        <!-- Progress Steps -->
+        <div class="px-8 pt-8">
+            <div class="flex justify-between items-center mb-8">
+                <a href="#" class="flex items-center">
+                    <i class="fas fa-plane-departure text-emerald-600 text-2xl mr-2"></i>
+                    <span class="text-xl font-bold text-emerald-600">Wanderlust Vendors</span>
+                </a>
+                <a href="{% url 'vendorlogin' %}" class="text-sm text-emerald-600 hover:underline">Already have an account? Sign in</a>
+            </div>
+            
+            <div class="flex justify-between items-center mb-12 relative">
+                <div class="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -z-10"></div>
+                <div class="absolute top-1/2 left-0 h-1 bg-emerald-600 -z-10" id="progress-bar" style="width: 0%"></div>
+                
+                <div class="flex flex-col items-center">
+                    <div class="progress-step active" id="step-1">1</div>
+                    <span class="text-xs mt-2 font-medium">Company Info</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="progress-step" id="step-2">2</div>
+                    <span class="text-xs mt-2 font-medium">Business Details</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="progress-step" id="step-3">3</div>
+                    <span class="text-xs mt-2 font-medium">Account Setup</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Registration Form -->
+        <form method="POST" action="{% url 'vendorsignin' %}" enctype="multipart/form-data" class="px-8 pb-8">
+            {% csrf_token %}
+            <!-- Step 1: Company Information -->
+            <div class="form-step active" id="form-step-1">
+                <h2 class="text-2xl font-bold mb-6">Company Information</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="company-name" class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-building text-gray-400"></i>
+                            </div>
+                            <input name="company_name" id="company-name" type="text" required 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="Your company name">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="company-email" class="block text-sm font-medium text-gray-700 mb-1">Business Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input name="company_email" id="company-email" type="email" required 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="contact@company.com">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="company-phone" class="block text-sm font-medium text-gray-700 mb-1">Business Phone</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-gray-400"></i>
+                            </div>
+                            <input name="company_phone" id="company-phone" type="tel" required 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="+1 (555) 123-4567">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="company-website" class="block text-sm font-medium text-gray-700 mb-1">Website (Optional)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-globe text-gray-400"></i>
+                            </div>
+                            <input name="company_website" id="company-website" type="url" 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="https://yourcompany.com">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex justify-end">
+                    <button type="button" class="next-step bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition font-medium">
+                        Next: Business Details <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Business Details -->
+            <div class="form-step" id="form-step-2">
+                <h2 class="text-2xl font-bold mb-6">Business Details</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="business-type" class="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
+                        <select name="business_type" id="business-type" class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border">
+                            <option value="">Select business type</option>
+                            <option value="tour-operator">Tour Operator</option>
+                            <option value="travel-agency">Travel Agency</option>
+                            <option value="hotel-resort">Hotel/Resort</option>
+                            <option value="adventure-company">Adventure Company</option>
+                            <option value="transport-service">Transport Service</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="years-in-business" class="block text-sm font-medium text-gray-700 mb-1">Years in Business</label>
+                        <input name="years_in_business" id="years-in-business" type="number" min="0" 
+                               class="input-field block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                               placeholder="3">
+                    </div>
+                    
+                    <div>
+                        <label for="business-description" class="block text-sm font-medium text-gray-700 mb-1">Business Description</label>
+                        <textarea name="business_description" id="business-description" rows="4" 
+                                  class="input-field block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                  placeholder="Tell us about your business and the services you offer"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Business Documents</label>
+                        <div id="file-upload" class="file-upload relative rounded-lg p-6 text-center cursor-pointer">
+                            <input name="business_documents" type="file" id="business-docs" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" multiple>
+                            <div class="pointer-events-none">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-emerald-500 mb-2"></i>
+                                <p class="font-medium text-gray-700">Upload business license and certifications</p>
+                                <p class="text-sm text-gray-500 mt-1">Drag & drop files here or click to browse</p>
+                                <p class="text-xs text-gray-400 mt-2">PDF, JPG, or PNG (max. 10MB each)</p>
+                            </div>
+                        </div>
+                        <div id="file-list" class="mt-2 text-sm text-gray-600"></div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex justify-between">
+                    <button type="button" class="prev-step text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i> Back
+                    </button>
+                    <button type="button" class="next-step bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition font-medium">
+                        Next: Account Setup <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Account Setup -->
+            <div class="form-step" id="form-step-3">
+                <h2 class="text-2xl font-bold mb-6">Account Setup</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="admin-name" class="block text-sm font-medium text-gray-700 mb-1">Admin Full Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-tie text-gray-400"></i>
+                            </div>
+                            <input name="admin_name" id="admin-name" type="text" required 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="John Smith">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="admin-email" class="block text-sm font-medium text-gray-700 mb-1">Admin Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input name="admin_email" id="admin-email" type="email" required 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="john@company.com">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input name="password" id="password" type="password" required 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="••••••••">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <button type="button" class="toggle-password text-gray-400 hover:text-gray-500">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500">Minimum 8 characters with at least one number and one special character</p>
+                    </div>
+                    
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input name="confirm_password" id="confirm-password" type="password" required 
+                                   class="input-field pl-10 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-3 px-4 border" 
+                                   placeholder="••••••••">
+                        </div>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <label for="terms" class="flex items-start">
+                            <input name="terms" id="terms" type="checkbox" required 
+                                   class="mt-1 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                            <span class="ml-2 text-sm text-gray-700">
+                                I agree to the <a href="{% url 'terms' %}" class="text-emerald-600 hover:underline">Terms of Service</a> 
+            
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mt-8 flex justify-between">
+                    <button type="button" class="prev-step text-gray-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i> Back
+                    </button>
+                    <button type="submit" class="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition font-medium">
+                        Complete Registration <i class="fas fa-check ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm-password');
+
+        // Create a validation message element
+        const validationMessage = document.createElement('p');
+        validationMessage.className = 'text-sm mt-2';
+        passwordInput.parentNode.appendChild(validationMessage);
+
+        passwordInput.addEventListener('input', function () {
+            const password = passwordInput.value;
+
+            const errors = [];
+
+            if (password.length < 8) {
+                errors.push("At least 8 characters");
+            }
+            if (!/[A-Z]/.test(password)) {
+                errors.push("At least one uppercase letter");
+            }
+            if (!/[0-9]/.test(password)) {
+                errors.push("At least one number");
+            }
+            if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password)) {
+                errors.push("At least one special character");
+            }
+
+            if (errors.length > 0) {
+                validationMessage.innerText = "Password must have: " + errors.join(", ");
+                validationMessage.classList.remove('text-green-600');
+                validationMessage.classList.add('text-red-600');
+            } else {
+                validationMessage.innerText = "Password is strong";
+                validationMessage.classList.remove('text-red-600');
+                validationMessage.classList.add('text-green-600');
+            }
+        });
+
+        confirmInput.addEventListener('input', function () {
+            if (confirmInput.value !== passwordInput.value) {
+                confirmInput.setCustomValidity("Passwords do not match");
+            } else {
+                confirmInput.setCustomValidity("");
+            }
+        });
+    });
+
+        // Form steps navigation
+        let currentStep = 1;
+        const totalSteps = 3;
+        
+        function updateProgress() {
+            // Update progress bar
+            const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
+            
+            // Update step indicators
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepElement = document.getElementById(`step-${i}`);
+                if (i < currentStep) {
+                    stepElement.classList.remove('active');
+                    stepElement.classList.add('completed');
+                } else if (i === currentStep) {
+                    stepElement.classList.add('active');
+                    stepElement.classList.remove('completed');
+                } else {
+                    stepElement.classList.remove('active', 'completed');
+                }
+            }
+            
+            // Show current form step
+            document.querySelectorAll('.form-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(`form-step-${currentStep}`).classList.add('active');
+        }
+        
+        // Next step button
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', function() {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateProgress();
+                }
+            });
+        });
+        
+        // Previous step button
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', function() {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateProgress();
+                }
+            });
+        });
+        
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const passwordInput = this.parentElement.previousElementSibling;
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.innerHTML = '<i class="far fa-eye-slash"></i>';
+                } else {
+                    passwordInput.type = 'password';
+                    this.innerHTML = '<i class="far fa-eye"></i>';
+                }
+            });
+        });
+        
+        // File upload handling
+        const fileUpload = document.getElementById('file-upload');
+        const fileInput = document.getElementById('business-docs');
+        const fileList = document.getElementById('file-list');
+        
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.classList.add('dragover');
+        });
+        
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.classList.remove('dragover');
+        });
+        
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+            updateFileList();
+        });
+        
+        fileInput.addEventListener('change', updateFileList);
+        
+        function updateFileList() {
+            fileList.innerHTML = '';
+            if (fileInput.files.length > 0) {
+                const list = document.createElement('ul');
+                Array.from(fileInput.files).forEach(file => {
+                    const item = document.createElement('li');
+                    item.className = 'flex items-center py-1';
+                    item.innerHTML = `
+                        <i class="fas fa-file-alt text-emerald-500 mr-2"></i>
+                        <span class="truncate flex-1">${file.name}</span>
+                        <span class="text-xs text-gray-500 ml-2">(${(file.size / 1024 / 1024).toFixed(2)}MB)</span>
+                    `;
+                    list.appendChild(item);
+                });
+                fileList.appendChild(list);
+            } else {
+                fileList.textContent = 'No files selected';
+            }
+        }
+    </script>
+</body>
+</html>

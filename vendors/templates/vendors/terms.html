@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Terms of Service | Wanderlust</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .terms-container {
+            scroll-behavior: smooth;
+        }
+        .terms-nav-item.active {
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+            background-color: var(--primary-light);
+        }
+        .terms-nav-item:hover {
+            background-color: #f0fdf4;
+        }
+        .terms-section {
+            scroll-margin-top: 120px;
+        }
+        .highlight-box {
+            border-left: 4px solid var(--primary);
+        }
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        .checkbox-container:hover input ~ .checkmark {
+            border-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-compass text-emerald-600 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">Wanderlust</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="{% url 'vendorlogin' %}" class="text-gray-500 hover:text-emerald-600">Vendor Login</a>
+                    <a href="{% url 'vendorsignin' %}" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">Register</a>
+                </div>
+                <button class="md:hidden text-gray-500 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Side Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-lg shadow-sm p-4 sticky top-24">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Terms of Service</h2>
+                    <nav class="space-y-1">
+                        <a href="#introduction" class="block px-3 py-2 terms-nav-item active">1. Introduction</a>
+                        <a href="#vendor-responsibilities" class="block px-3 py-2 terms-nav-item">2. Vendor Responsibilities</a>
+                        <a href="#content-ownership" class="block px-3 py-2 terms-nav-item">3. Content Ownership</a>
+                        <a href="#payments-fees" class="block px-3 py-2 terms-nav-item">4. Payments & Fees</a>
+                        <a href="#cancellation-policy" class="block px-3 py-2 terms-nav-item">5. Cancellation Policy</a>
+                        <a href="#privacy-data" class="block px-3 py-2 terms-nav-item">6. Privacy & Data</a>
+                        <a href="#termination" class="block px-3 py-2 terms-nav-item">7. Termination</a>
+                        <a href="#disputes" class="block px-3 py-2 terms-nav-item">8. Disputes</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Terms Content -->
+            <div class="lg:w-3/4 terms-container">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 p-6 text-white">
+                        <h1 class="text-2xl font-bold">Vendor Terms of Service</h1>
+                        <p class="mt-2 text-emerald-100">Last updated: June 15, 2023</p>
+                    </div>
+
+                    <!-- Terms Sections -->
+                    <div class="p-6 space-y-8">
+                        <!-- Introduction -->
+                        <section id="introduction" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">1. Introduction</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>Welcome to Wanderlust's Vendor Platform. These Terms of Service ("Terms") govern your access to and use of Wanderlust's vendor services, including our website, APIs, email notifications, applications, and other services ("Services").</p>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg highlight-box">
+                                    <p class="font-medium text-gray-700">By registering as a vendor, you agree to these Terms. Please read them carefully.</p>
+                                </div>
+                                
+                                <p>These Terms apply to all vendors, partners, and others who access the Services. If you don't agree to these Terms, you may not use the Services.</p>
+                            </div>
+                        </section>
+
+                        <!-- Vendor Responsibilities -->
+                        <section id="vendor-responsibilities" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">2. Vendor Responsibilities</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>As a vendor on Wanderlust, you agree to:</p>
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Provide accurate, current, and complete information during registration</li>
+                                    <li>Maintain and promptly update your vendor profile</li>
+                                    <li>Ensure all package listings are truthful and not misleading</li>
+                                    <li>Maintain appropriate insurance coverage for all offered services</li>
+                                    <li>Comply with all applicable laws and regulations</li>
+                                    <li>Respond to customer inquiries within 24 hours</li>
+                                </ul>
+                                
+                                <p>You are solely responsible for the quality and delivery of your services to customers. Wanderlust acts only as a marketplace platform.</p>
+                            </div>
+                        </section>
+
+                        <!-- Content Ownership -->
+                        <section id="content-ownership" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">3. Content Ownership</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>You retain ownership rights in the content you submit to Wanderlust ("Vendor Content"). By submitting Vendor Content, you grant Wanderlust a worldwide, non-exclusive, royalty-free license to:</p>
+                                
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Use, reproduce, distribute, and display the Vendor Content in connection with the Services</li>
+                                    <li>Modify the Vendor Content for technical purposes (e.g., formatting)</li>
+                                    <li>Promote the Vendor Content through marketing channels</li>
+                                </ul>
+                                
+                                <p>You represent and warrant that you have all rights necessary to grant this license and that your Vendor Content doesn't infringe any third-party rights.</p>
+                            </div>
+                        </section>
+
+                        <!-- Payments & Fees -->
+                        <section id="payments-fees" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">4. Payments & Fees</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>Wanderlust charges vendors a commission fee of 15% on all completed bookings. This fee covers:</p>
+                                
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Platform maintenance and development</li>
+                                    <li>Customer support services</li>
+                                    <li>Marketing and promotion</li>
+                                    <li>Payment processing</li>
+                                </ul>
+                                
+                                <p>Payments to vendors are processed on a bi-weekly basis, minus any applicable fees. Vendors are responsible for:</p>
+                                
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Providing accurate payment information</li>
+                                    <li>Any taxes associated with your services</li>
+                                    <li>Any chargebacks or payment disputes</li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <!-- Cancellation Policy -->
+                        <section id="cancellation-policy" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">5. Cancellation Policy</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>Vendors must adhere to the following cancellation policies:</p>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cancellation Period</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Refund to Customer</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Vendor Fee</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="px-4 py-2 text-sm">More than 30 days</td>
+                                                <td class="px-4 py-2 text-sm">100%</td>
+                                                <td class="px-4 py-2 text-sm">5% of total</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 text-sm">15-30 days</td>
+                                                <td class="px-4 py-2 text-sm">75%</td>
+                                                <td class="px-4 py-2 text-sm">10% of total</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 text-sm">7-14 days</td>
+                                                <td class="px-4 py-2 text-sm">50%</td>
+                                                <td class="px-4 py-2 text-sm">15% of total</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 text-sm">Less than 7 days</td>
+                                                <td class="px-4 py-2 text-sm">25%</td>
+                                                <td class="px-4 py-2 text-sm">20% of total</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <p>Vendors may set more favorable cancellation terms, but not less favorable than these minimum standards.</p>
+                            </div>
+                        </section>
+
+                        <!-- Privacy & Data -->
+                        <section id="privacy-data" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">6. Privacy & Data</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>Wanderlust collects and processes personal data in accordance with our Privacy Policy. As a vendor, you agree to:</p>
+                                
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Comply with all applicable data protection laws</li>
+                                    <li>Only use customer data for fulfilling bookings</li>
+                                    <li>Implement appropriate security measures</li>
+                                    <li>Report any data breaches within 24 hours</li>
+                                </ul>
+                                
+                                <p>You may not sell, share, or otherwise distribute customer data obtained through Wanderlust.</p>
+                            </div>
+                        </section>
+
+                        <!-- Termination -->
+                        <section id="termination" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">7. Termination</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>Either party may terminate this agreement with 30 days written notice. Wanderlust may immediately suspend or terminate your account if:</p>
+                                
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>You violate these Terms</li>
+                                    <li>We suspect fraudulent activity</li>
+                                    <li>Required by law</li>
+                                </ul>
+                                
+                                <p>Upon termination, you must:</p>
+                                
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Fulfill all outstanding bookings</li>
+                                    <li>Pay any outstanding fees</li>
+                                    <li>Remove all Wanderlust branding</li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <!-- Disputes -->
+                        <section id="disputes" class="terms-section">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">8. Disputes</h2>
+                            <div class="space-y-4 text-gray-600">
+                                <p>Any disputes arising from these Terms will be governed by the laws of India. The parties agree to first attempt to resolve disputes through good faith negotiations.</p>
+                                
+                                <p>If a dispute cannot be resolved amicably, it will be submitted to binding arbitration in Bangalore, India. The arbitration will be conducted in English.</p>
+                                
+                                <p>Notwithstanding the above, Wanderlust may seek injunctive relief in any court of competent jurisdiction to protect its intellectual property or confidential information.</p>
+                            </div>
+                        </section>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-compass text-emerald-400 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold">Wanderlust</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Creating unforgettable travel experiences since 2010.</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">For Vendors</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Register</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Vendor Dashboard</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Resources</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4">Contact</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        <i class="fas fa-envelope mr-2"></i> vendors@wanderlust.com
+                    </p>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-gray-700 text-center text-gray-400 text-sm">
+                &copy; 2023 Wanderlust. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // Update active nav item
+                document.querySelectorAll('.terms-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Scroll to section
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Highlight nav item when scrolling
+        const sections = document.querySelectorAll('.terms-section');
+        const navItems = document.querySelectorAll('.terms-nav-item');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Terms acceptance checkbox
+        const checkbox = document.getElementById('accept-terms');
+        const acceptButton = document.getElementById('accept-button');
+        
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                acceptButton.disabled = false;
+                acceptButton.classList.remove('bg-gray-300', 'text-gray-600', 'cursor-not-allowed');
+                acceptButton.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'cursor-pointer');
+            } else {
+                acceptButton.disabled = true;
+                acceptButton.classList.add('bg-gray-300', 'text-gray-600', 'cursor-not-allowed');
+                acceptButton.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'text-white', 'cursor-pointer');
+            }
+        });
+
+        // Accept button click
+        acceptButton.addEventListener('click', function() {
+            if (!this.disabled) {
+                alert('Thank you for accepting our Terms of Service. You may now proceed with your vendor registration.');
+                // In a real application, you would redirect to registration or submit a form
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Package</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <!-- Header with package info -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+            <div class="md:flex">
+                <div class="md:flex-shrink-0">
+                    {% if package.images.first %}
+                    <img class="h-48 w-full md:w-48 object-cover" src="{{ package.images.first.image.url }}" alt="{{ package.name }}">
+                    {% else %}
+                    <div class="h-48 w-full md:w-48 bg-gray-200 flex items-center justify-center">
+                        <svg class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="p-8">
+                    <div class="uppercase tracking-wide text-sm text-indigo-600 font-semibold">Package Details</div>
+                    <h1 class="block mt-1 text-2xl font-medium text-gray-900">{{ package.name }}</h1>
+                    <div class="mt-2 flex items-center">
+                        <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                        <span class="ml-1 text-gray-600">4.8 (24 reviews)</span>
+                    </div>
+                    <p class="mt-2 text-gray-600">{{ package.destination }}</p>
+                    <div class="mt-4">
+                        <span class="text-2xl font-bold text-gray-900">₹{{ package.price }}</span>
+                        <span class="text-sm text-gray-600">/person</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Complete Your Booking</h2>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                </label>
+                {% if field.field.widget.input_type == 'select' %}
+                <div class="relative">
+                    {{ field }}
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                        </svg>
+                    </div>
+                </div>
+                {% else %}
+                {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+                {% endif %}
+                {% if field.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ field.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="pt-6 border-t border-gray-200">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-900">Total Amount</h3>
+                    <p class="mt-1 text-sm text-gray-500">Includes all taxes and fees</p>
+                </div>
+                <span id="total-amount" class="text-2xl font-bold text-indigo-600">₹{{ package.price }}</span>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-end space-x-4">
+            <a href="" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Cancel
+            </a>
+            <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Proceed to Payment
+                <svg class="ml-2 -mr-1 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </form>
+</div>
+
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const travelersInput = document.getElementById("id_travelers"); // adjust if your field name is different
+    const totalDisplay = document.getElementById("total-amount");
+    const pricePerPerson = {{ package.price }};
+
+    function updateTotal() {
+        const count = parseInt(travelersInput.value) || 1;
+        const total = count * pricePerPerson;
+        totalDisplay.textContent = `₹${total.toLocaleString('en-IN')}.00`;
+    }
+
+    if (travelersInput) {
+        travelersInput.addEventListener("input", updateTotal);
+        updateTotal(); // call on page load
+    }
+});
+
+        // Add classes to form inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.classList.add(
+                    'form-input', 
+                    'block', 
+                    'w-full', 
+                    'px-4', 
+                    'py-2', 
+                    'border', 
+                    'border-gray-300', 
+                    'rounded-md', 
+                    'shadow-sm', 
+                    'focus:border-indigo-500', 
+                    'focus:ring-indigo-500'
+                );
+                
+                // Add specific styling for select elements
+                if (input.tagName === 'SELECT') {
+                    input.classList.add('appearance-none');
+                }
+                
+                // Add specific styling for date inputs
+                if (input.type === 'date') {
+                    input.classList.add('pr-10');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

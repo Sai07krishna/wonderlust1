@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Wanderlust</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+        .active-nav {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            color: #2563eb;
+        }
+        .sidebar {
+            background: white;
+            box-shadow: 4px 0 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .stat-icon {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.2) 100%);
+            color: #2563eb;
+        }
+        .booking-card {
+            transition: all 0.3s ease;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .booking-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3b82f6, #60a5fa);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-white font-sans">
+    <div class="flex">
+        <!-- Sleek Sidebar -->
+        <div class="w-20 sidebar h-screen sticky top-0 flex flex-col z-10 border-r border-gray-100">
+            <div class="p-5 flex items-center justify-center border-b border-gray-100">
+                <i class="fas fa-plane text-blue-500 text-2xl"></i>
+            </div>
+            <nav class="flex-1 flex flex-col items-center pt-8 space-y-8">
+                <a href="{% url 'home' %}" class="p-3 rounded-xl active-nav" title="Dashboard">
+                    <i class="fas fa-home text-lg"></i>
+                </a>
+                <a href="{% url 'view_booked' %}" class="p-3 rounded-xl text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors" title="my bookings">
+                    <i class="fas fa-suitcase text-lg"></i>
+                </a>
+                <a href="{% url 'profile_settings' %}" class="p-3 rounded-xl text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors" title="Settings">
+                    <i class="fas fa-cog text-lg"></i>
+                </a>
+            </nav>
+            <div class="p-5 mt-auto">
+                <a href="{% url 'userlogout' %}" class="p-3 rounded-xl text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors block" title="Logout">
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6 md:p-8">
+            <!-- Header -->
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Welcome Back!</h1>
+                    <p class="text-gray-500 mt-1">Here's what's happening with your trips</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2.5 text-gray-500 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium">
+                        {{ user.username|first|upper }}
+                    </div>
+                </div>
+            </header>
+
+   <!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
+    <div class="dashboard-card p-5">
+        <div class="flex items-center">
+            <div class="stat-icon p-3 rounded-lg mr-4">
+                <i class="fas fa-calendar text-xl"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wider font-medium">Upcoming</p>
+                <p class="text-2xl font-bold text-gray-900 mt-1">{{ upcoming_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="dashboard-card p-5">
+        <div class="flex items-center">
+            <div class="stat-icon p-3 rounded-lg mr-4">
+                <i class="fas fa-check-circle text-xl"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-500 uppercase tracking-wider font-medium">Completed</p>
+                <p class="text-2xl font-bold text-gray-900 mt-1">{{ completed_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+        <!-- Booked Trips Section -->
+<section class="mb-10">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl md:text-2xl font-bold text-gray-900">Your Booked Trips</h2>
+        <a href="{% url 'featured_packages' %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+            <span>Explore More</span>
+            <i class="fas fa-chevron-right ml-1 text-xs"></i>
+        </a>
+    </div>
+
+    {% if bookings %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for booking in bookings %}
+                <div class="booking-card p-6 shadow-sm hover:shadow-md bg-white rounded-lg border border-gray-100">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-bold text-gray-900">{{ booking.package.name }}</h3>
+                        <span class="text-xs font-medium px-2.5 py-1 rounded-full {% if booking.is_paid %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                            {% if booking.is_paid %}Confirmed{% else %}Pending{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-gray-400 mr-3 w-5"></i>
+                            <span class="text-gray-600">{{ booking.package.destination }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar-alt text-gray-400 mr-3 w-5"></i>
+                            <span class="text-gray-600">{{ booking.travel_date|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-gray-400 mr-3 w-5"></i>
+                            <span class="text-gray-600">{{ booking.travelers }} traveler{{ booking.travelers|pluralize }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-tag text-gray-400 mr-3 w-5"></i>
+                            <span class="text-gray-600 font-medium">₹{{ booking.total_price }}</span>
+                        </div>
+
+                        <!-- Vendor Response Section -->
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-500">Vendor Status: 
+                                <span class="font-medium {% if booking.vendor_status == 'Approved' %}text-green-600{% elif booking.vendor_status == 'Rejected' %}text-red-600{% else %}text-yellow-600{% endif %}">
+                                    {{ booking.vendor_status }}
+                                </span>
+                            </p>
+
+                            {% if booking.vendor_message %}
+                                <p class="text-sm text-gray-600 mt-1"><strong>Message:</strong> {{ booking.vendor_message }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-100 flex justify-end">
+                        <a href="{% url 'booking_detail' booking.id %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Details →</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="dashboard-card p-8 text-center">
+            <i class="fas fa-suitcase text-4xl text-gray-300 mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-700 mb-2">No trips booked yet</h3>
+            <p class="text-gray-500 mb-4">Start your adventure by exploring our amazing destinations</p>
+            <a href="{% url 'featured_packages' %}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                Browse Packages
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+            <!-- Quick Actions -->
+            <section>
+                <div class="dashboard-card">
+                    <div class="p-5 border-b border-gray-100">
+                        <h2 class="font-semibold text-gray-800">Quick Actions</h2>
+                    </div>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <a href="{% url 'featured_packages' %}" class="group p-4 rounded-lg hover:bg-blue-50 transition-colors border border-gray-100">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 group-hover:bg-blue-200 p-3 rounded-lg mr-4 transition-colors">
+                                    <i class="fas fa-search text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-800">Find New Tours</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Discover your next adventure</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="{% url 'reviews' %}" class="group p-4 rounded-lg hover:bg-blue-50 transition-colors border border-gray-100">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 group-hover:bg-blue-200 p-3 rounded-lg mr-4 transition-colors">
+                                    <i class="fas fa-share-alt text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-800">Share Experiences</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Tell others about your trips</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="{% url 'profile_settings' %}" class="group p-4 rounded-lg hover:bg-blue-50 transition-colors border border-gray-100">
+                            <div class="flex items-center">
+                                <div class="bg-blue-100 group-hover:bg-blue-200 p-3 rounded-lg mr-4 transition-colors">
+                                    <i class="fas fa-cog text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-800">Account Settings</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Manage your preferences</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

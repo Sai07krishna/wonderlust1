@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard | Wanderlust</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .dashboard-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .nav-link.active {
+            background-color: var(--primary-light);
+            border-left: 3px solid var(--primary);
+        }
+        .package-card {
+            transition: all 0.2s ease;
+        }
+        .package-card:hover {
+            transform: translateY(-3px);
+        }
+        .status-badge.pending {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .status-badge.approved {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        .status-badge.rejected {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-20 bg-white h-screen sticky top-0 shadow-sm flex flex-col">
+            <div class="p-4 flex items-center justify-center border-b border-gray-200">
+                <i class="fas fa-briefcase text-emerald-600 text-2xl"></i>
+            </div>
+            <nav class="flex-1 flex flex-col items-center pt-6 space-y-8">
+                <a href="{% url 'vendordash' %}" class="p-3 rounded-lg nav-link active text-emerald-600" title="Dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                </a>
+                <a href="#" class="p-3 rounded-lg nav-link text-gray-500 hover:bg-gray-100" title="Packages">
+                    <i class="fas fa-suitcase"></i>
+                </a>
+                <a href="#" class="p-3 rounded-lg nav-link text-gray-500 hover:bg-gray-100" title="Bookings">
+                    <i class="fas fa-calendar-check"></i>
+                </a>
+            </nav>
+            <div class="p-4 mt-auto flex flex-col items-center space-y-4">
+                <a href="{% url 'userlogout' %}" id="logout-btn" class="p-3 rounded-lg text-gray-500 hover:bg-gray-100 block" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Vendor Dashboard</h1>
+                    <p class="text-sm text-gray-500">Manage your tour packages and bookings</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8" id="stats-cards">
+                <div class="dashboard-card bg-white rounded-lg p-4">
+                    <div class="flex items-center">
+                        <div class="bg-emerald-100 p-3 rounded-lg mr-4">
+                            <i class="fas fa-suitcase text-emerald-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Total Packages</p>
+                            <p class="text-xl font-bold">{{ total_packages }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card bg-white rounded-lg p-4">
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 p-3 rounded-lg mr-4">
+                            <i class="fas fa-clock text-blue-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Pending Approval</p>
+                            <p class="text-xl font-bold">{{ pending_packages }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card bg-white rounded-lg p-4">
+                    <div class="flex items-center">
+                        <div class="bg-green-100 p-3 rounded-lg mr-4">
+                            <i class="fas fa-check-circle text-green-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-wider">Active Bookings</p>
+                            <p class="text-xl font-bold">{{ active_bookings }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-800">Your Packages</h2>
+                <button id="add-package-btn" class="flex items-center px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
+                    <i class="fas fa-plus mr-2"></i> Add New Package
+                </button>
+            </div>
+
+            <!-- Package Management Tabs -->
+            <div class="mb-6 border-b border-gray-200">
+                <nav class="flex space-x-8">
+                    <a href="" class="py-2 px-1 border-b-2 border-emerald-600 text-emerald-600 font-medium text-sm">
+                        Active Packages
+                    </a>
+                    <a href="{% url 'pending_package' %}" class="py-2 px-1 text-gray-500 hover:text-gray-700 font-medium text-sm">
+                        Pending Approval
+                    </a>
+                     <a href="{% url 'vendor_bookings' %}" class="py-2 px-1 text-gray-500 hover:text-gray-700 font-medium text-sm">
+                        view bookings
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Packages Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="packages-container">
+                {% for package in active_packages %}
+                <div class="package-card bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
+                    <div class="h-48 bg-gray-100 relative overflow-hidden">
+                        {% if package.images.first %}
+                        <img src="{{ package.images.first.image.url }}" 
+                             alt="{{ package.name }}" 
+                             class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        {% else %}
+                        <div class="w-full h-full flex items-center justify-center text-gray-400">
+                            <i class="fas fa-image fa-3x"></i>
+                        </div>
+                        {% endif %}
+                        <!-- Price Tag -->
+                        <div class="absolute top-4 right-4 bg-emerald-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-md">
+                            ₹{{ package.price|floatformat:"0" }}
+                        </div>
+                    </div>
+                    
+                    <!-- Package Details -->
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">{{ package.name }}</h3>
+                            <span class="flex items-center text-amber-400">
+                                <i class="fas fa-star"></i>
+                                <span class="ml-1 text-gray-600">4.5</span>  <!-- Default rating since not in model -->
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center text-gray-500 mb-3">
+                            <i class="fas fa-map-marker-alt text-emerald-500 mr-2"></i>
+                            <span>{{ package.destination }}</span>  <!-- Changed from location to destination -->
+                        </div>
+                        
+                        <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                            <span class="flex items-center">
+                                <i class="far fa-calendar text-emerald-500 mr-2"></i>
+                                {{ package.duration }} day{{ package.duration|pluralize }}
+                            </span>
+                            <span class="flex items-center">
+                                <i class="fas fa-users text-emerald-500 mr-2"></i>
+                                Max {{ package.group_size }} people
+                            </span>
+                        </div>
+                        
+                        <!-- View Button -->
+                        <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                            <a href="{% url 'package_details' package.id %}" 
+                               class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-300 flex items-center">
+                                <span>View Details</span>
+                                <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                            </a>
+                            <span class="text-xs text-gray-400">
+                                <i class="far fa-clock mr-1"></i>
+                                Flexible dates  <!-- Default since not in model -->
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center py-12">
+                    <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-suitcase text-gray-400 text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-medium text-gray-700 mb-2">No active packages yet</h3>
+                    <p class="text-gray-500 max-w-md mx-auto">
+                        We don't have any active packages at the moment. Check back soon for new adventures!
+                    </p>
+                    <a href="#" class="mt-4 inline-block px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition">
+                        Explore Other Tours
+                    </a>
+                </div>
+                {% endfor %}
+                
+                <!-- Add New Package Card -->
+                <div id="add-package-card" class="package-card bg-white rounded-lg border-2 border-dashed border-gray-300 hover:border-emerald-400 flex items-center justify-center cursor-pointer transition">
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-plus text-emerald-600"></i>
+                        </div>
+                        <h3 class="font-medium text-gray-700">Add New Package</h3>
+                        <p class="text-xs text-gray-500 mt-1">Create your next tour offering</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Package Modal (Hidden by default) -->
+            <div id="package-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-800">Add New Package</h3>
+                            <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <form id="package-form" action="{% url 'add_package' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Package Name</label>
+                                    <input type="text" name="package_name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
+                                    <input type="text" name="destination" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Price [per person]</label>
+                                    <input type="number" name="price" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Duration (days)</label>
+                                    <input type="number" name="duration" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Max Group Size</label>
+                                    <input type="number" name="group_size" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <textarea rows="3" name="description" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border"></textarea>
+                            </div>
+                            <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                            <input type="date" name="expiry_date" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Package Images</label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-cloud-upload-alt text-gray-400 mx-auto text-3xl"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label class="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none">
+                                                <span>Upload files</span>
+                                                <input type="file" name="images" class="sr-only" multiple>
+                                            </label>
+                                            <p class="pl-1">or drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-4 flex justify-end space-x-3">
+                                <button type="button" id="cancel-modal" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                                    Submit for Approval
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .package-card {
+                    transition: all 0.3s ease;
+                }
+                .package-card:hover {
+                    transform: translateY(-5px);
+                }
+            </style>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Mock data - in a real app, this would come from an API
+                    const vendorData = {
+                        name: "Acme Tours",
+                        stats: {
+                            totalPackages: 0,
+                            pendingPackages: 0,
+                            activeBookings: 0,
+                            avgRating: 0.0
+                        },
+                        packages: [],
+                        pendingApprovals: []
+                    };
+
+                    // Initialize the dashboard
+                    function initDashboard() {
+                        // Set vendor name
+                        document.getElementById('vendor-name').textContent = vendorData.name;
+                        
+                        // Update stats
+                        updateStats();
+                        
+                        // Load packages
+                        loadPackages();
+                        
+                        // Load pending approvals
+                        loadPendingApprovals();
+                    }
+
+                    // Update stats cards
+                    function updateStats() {
+                        document.getElementById('total-packages').textContent = vendorData.stats.totalPackages;
+                        document.getElementById('pending-packages').textContent = vendorData.stats.pendingPackages;
+                        document.getElementById('active-bookings').textContent = vendorData.stats.activeBookings;
+                        document.getElementById('avg-rating').textContent = vendorData.stats.avgRating.toFixed(1);
+                    }
+
+                    // Load packages
+                    function loadPackages() {
+                        const container = document.getElementById('packages-container');
+                        
+                        // Clear existing packages (except the add package card)
+                        const addCard = document.getElementById('add-package-card');
+                        container.innerHTML = '';
+                        container.appendChild(addCard);
+                        
+                        if (vendorData.packages.length === 0) {
+                            const emptyState = document.createElement('div');
+                            emptyState.className = 'col-span-3 text-center py-8';
+                            emptyState.innerHTML = `
+                                <i class="fas fa-suitcase text-gray-300 text-4xl mb-3"></i>
+                                <h3 class="text-lg font-medium text-gray-700">No packages yet</h3>
+                                <p class="text-sm text-gray-500 mt-1">Add your first tour package to get started</p>
+                            `;
+                            container.insertBefore(emptyState, addCard);
+                            return;
+                        }
+                        
+                        // Add package cards
+                        vendorData.packages.forEach(pkg => {
+                            const packageCard = createPackageCard(pkg);
+                            container.insertBefore(packageCard, addCard);
+                        });
+                    }
+
+                    // Create a package card element
+                    function createPackageCard(pkg) {
+                        const card = document.createElement('div');
+                        card.className = 'package-card bg-white rounded-lg border border-gray-200 overflow-hidden';
+                        card.innerHTML = `
+                            <div class="relative">
+                                <div class="h-40 bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400 text-3xl"></i>
+                                </div>
+                                <div class="absolute top-3 right-3 flex space-x-2">
+                                    <button class="edit-package p-2 bg-white rounded-full shadow-sm text-gray-600 hover:text-emerald-600">
+                                        <i class="fas fa-pencil-alt text-xs"></i>
+                                    </button>
+                                    <button class="delete-package p-2 bg-white rounded-full shadow-sm text-gray-600 hover:text-red-600">
+                                        <i class="fas fa-trash-alt text-xs"></i>
+                                    </button>
+                                </div>
+                                <div class="absolute bottom-3 left-3">
+                                    <span class="status-badge ${pkg.status} text-xs font-medium px-2 py-1 rounded">${pkg.status === 'approved' ? 'Approved' : pkg.status === 'pending' ? 'Pending Review' : 'Rejected'}</span>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg mb-1">${pkg.name}</h3>
+                                <p class="text-sm text-gray-600 mb-2">${pkg.duration} days • From ₹${pkg.price}</p>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-map-marker-alt text-gray-400 text-xs mr-1"></i>
+                                        <span class="text-xs text-gray-500">${pkg.destination}</span>
+                                    </div>
+                                    ${pkg.rating ? `
+                                    <div class="flex items-center">
+                                        <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
+                                        <span class="text-xs">${pkg.rating}</span>
+                                    </div>
+                                    ` : `
+                                    <div class="text-xs text-gray-400">
+                                        ${pkg.status === 'pending' ? 'Awaiting approval' : 'No reviews yet'}
+                                    </div>
+                                    `}
+                                </div>
+                            </div>
+                        `;
+                        return card;
+                    }
+
+                    // Load pending approvals
+                    function loadPendingApprovals() {
+                        const container = document.getElementById('approval-list');
+                        container.innerHTML = '';
+                        
+                        document.getElementById('pending-count').textContent = 
+                            `${vendorData.pendingApprovals.length} ${vendorData.pendingApprovals.length === 1 ? 'package' : 'packages'} in review`;
+                        
+                        if (vendorData.pendingApprovals.length === 0) {
+                            container.innerHTML = `
+                                <div class="p-8 text-center">
+                                    <i class="fas fa-check-circle text-gray-300 text-4xl mb-3"></i>
+                                    <h3 class="text-lg font-medium text-gray-700">No packages pending approval</h3>
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        vendorData.pendingApprovals.forEach(pkg => {
+                            const item = document.createElement('div');
+                            item.className = 'grid grid-cols-12 gap-4 p-4 items-center hover:bg-gray-50';
+                            item.innerHTML = `
+                                <div class="col-span-5 font-medium">${pkg.name}</div>
+                                <div class="col-span-2 text-sm">₹${pkg.price}</div>
+                                <div class="col-span-2 text-sm">${pkg.duration} days</div>
+                                <div class="col-span-2">
+                                    <span class="status-badge pending text-xs px-2 py-1 rounded">Pending</span>
+                                </div>
+                                <div class="col-span-1 flex justify-end">
+                                    <button class="text-gray-400 hover:text-gray-600 p-1">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            `;
+                            container.appendChild(item);
+                        });
+                    }
+
+                    // Tab switching
+                    const tabs = document.querySelectorAll('.package-tab');
+                    tabs.forEach(tab => {
+                        tab.addEventListener('click', function() {
+                            tabs.forEach(t => t.classList.remove('border-emerald-600', 'text-emerald-600'));
+                            tabs.forEach(t => t.classList.add('text-gray-500'));
+                            this.classList.add('border-emerald-600', 'text-emerald-600');
+                            this.classList.remove('text-gray-500');
+                            
+                            // In a real app, you would filter packages by status here
+                            const tab = this.dataset.tab;
+                            console.log(`Switched to ${tab} tab`);
+                        });
+                    });
+
+                    // Add package modal
+                    const addPackageBtn = document.getElementById('add-package-btn');
+                    const packageModal = document.getElementById('package-modal');
+                    const closeModal = document.getElementById('close-modal');
+                    const cancelModal = document.getElementById('cancel-modal');
+                    
+                    addPackageBtn.addEventListener('click', function() {
+                        packageModal.classList.remove('hidden');
+                    });
+                    
+                    closeModal.addEventListener('click', function() {
+                        packageModal.classList.add('hidden');
+                    });
+                    
+                    cancelModal.addEventListener('click', function() {
+                        packageModal.classList.add('hidden');
+                    });
+
+                    // Logout functionality
+                    document.getElementById('logout-btn').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (confirm('Are you sure you want to log out?')) {
+                            // In a real app, this would redirect to logout endpoint
+                            console.log('User logged out');
+                            // For demo, just reload the page
+                            window.location.href = '/login';
+                        }
+                    });
+
+                    // Initialize the dashboard
+                    initDashboard();
+                });
+            </script>
+        </div>
+    </div>
+</body>
+</html>

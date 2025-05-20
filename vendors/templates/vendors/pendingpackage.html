@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awaiting Admin Approval | Wanderlust</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            padding: 2rem;
+        }
+        /* Animation for status badge */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .pending-badge {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+            <i class="fas fa-clock text-amber-500 mr-3"></i>
+            Awaiting Admin Approval
+            <span class="ml-auto text-sm font-normal text-gray-500">
+                {{ pending_packages|length }} package{{ pending_packages|length|pluralize }} in review
+            </span>
+        </h2>
+
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+            <div class="p-4 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-gray-50">
+                <div class="grid grid-cols-12 gap-4 text-xs font-semibold text-emerald-800 uppercase tracking-wider">
+                    <div class="col-span-5 flex items-center">
+                        <i class="fas fa-suitcase mr-2 text-sm"></i>
+                        Package Name
+                    </div>
+                    <div class="col-span-2 flex items-center">
+                        <i class="fas fa-tag mr-2 text-sm"></i>
+                        Price
+                    </div>
+                    <div class="col-span-2 flex items-center">
+                        <i class="far fa-calendar-alt mr-2 text-sm"></i>
+                        Duration
+                    </div>
+                    <div class="col-span-2 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-sm"></i>
+                        Status
+                    </div>
+                    <div class="col-span-1"></div>
+                </div>
+            </div>
+            
+            <div class="divide-y divide-gray-100" id="approval-list">
+                {% for package in pending_packages %}
+                <div class="grid grid-cols-12 gap-4 p-4 items-center hover:bg-gray-50 transition-colors duration-150">
+                    <div class="col-span-5 font-medium text-gray-800 flex items-center">
+                        <div class="w-10 h-10 rounded-md bg-emerald-100 flex items-center justify-center mr-3 text-emerald-600">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold">{{ package.name }}</div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                {{ package.destination }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-2 text-gray-700 font-medium">
+                        ₹{{ package.price|floatformat:"0" }}
+                    </div>
+                    <div class="col-span-2 text-gray-700">
+                        {{ package.duration }} day{{ package.duration|pluralize }}
+                    </div>
+                    <div class="col-span-2">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 pending-badge">
+                            <i class="fas fa-hourglass-half mr-1.5"></i>
+                            {{ package.status|title }}
+                        </span>
+                    </div>
+                    <div class="col-span-1 flex justify-end">
+                        <button class="p-2 text-gray-400 hover:text-emerald-600 rounded-full hover:bg-emerald-50 transition-colors"
+                                title="View details"
+                                @click="openPackageDetails({{ package.id }})">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="p-8 text-center">
+                    <div class="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-4">
+                        <i class="fas fa-check-circle text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-700">No pending packages</h3>
+                    <p class="text-sm text-gray-500 mt-1 max-w-md mx-auto">
+                        All your packages have been approved. When you submit new packages, they'll appear here for review.
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Alpine.js for interactivity -->
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script>
+        function packageDetails() {
+            return {
+                openPackageDetails(packageId) {
+                    // Your package details opening logic here
+                    console.log('Opening package details for ID:', packageId);
+                    // In a real implementation, this might show a modal or navigate to details page
+                }
+            }
+        }
+    </script>
+</body>
+</html>

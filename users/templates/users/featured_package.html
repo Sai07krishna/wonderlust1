@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Packages | Wanderlust</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wanderlust: {
+                            primary: '#10b981',
+                            dark: '#059669',
+                            light: '#d1fae5',
+                            extraLight: '#ecfdf5'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        'card-hover': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        'price': '0 4px 6px -1px rgba(16, 185, 129, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .package-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--tw-shadow-card-hover);
+        }
+        .price-tag {
+            box-shadow: var(--tw-shadow-price);
+        }
+        .search-filter {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.9) 0%, rgba(5, 150, 105, 0.95) 100%);
+        }
+        .nav-link {
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #059669;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        .active-nav {
+            color: #059669;
+            font-weight: 500;
+        }
+        .active-nav:after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <i class="fas fa-compass text-wanderlust-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-800">Wanderlust</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'home' %}" class="nav-link text-gray-500 hover:text-wanderlust-dark">Home</a>
+                    <a href="{% url 'featured_packages' %}" class="nav-link active-nav">Packages</a>
+                    <a href="{% url 'aboutus' %}" class="nav-link text-gray-500 hover:text-wanderlust-dark">About</a>
+                    <a href="{% url 'contact' %}" class="px-4 py-2 bg-wanderlust-primary text-white rounded-lg hover:bg-wanderlust-dark transition-colors duration-300 shadow-md">
+                        Contact
+                    </a>
+                </div>
+                <button class="md:hidden text-gray-500 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative hero-gradient overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="relative z-10 py-16 sm:py-24 lg:py-32 px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl">
+                        <span class="block">Discover Your Next</span>
+                        <span class="block text-wanderlust-light">Adventure</span>
+                    </h1>
+                    <p class="mt-3 max-w-md mx-auto text-lg text-wanderlust-extraLight sm:text-xl md:mt-5 md:max-w-3xl">
+                        Explore our carefully curated travel packages designed to create unforgettable experiences.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8">
+        <form method="get" action="" class="bg-white p-6 rounded-xl shadow-md">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                    <select name="duration" class="w-full rounded-lg border-gray-300 focus:ring-wanderlust-primary focus:border-wanderlust-primary">
+                        <option value="">Any Duration</option>
+                        <option value="3">Up to 3 days</option>
+                        <option value="7">Up to 7 days</option>
+                        <option value="14">Up to 14 days</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Price Range</label>
+                    <select name="price" class="w-full rounded-lg border-gray-300 focus:ring-wanderlust-primary focus:border-wanderlust-primary">
+                        <option value="">Any Price</option>
+                        <option value="1">10000-25000</option>
+                        <option value="2">25000-50000</option>
+                        <option value="3">50000+</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-wanderlust-primary hover:bg-wanderlust-dark text-white py-2 px-4 rounded-lg font-medium transition-colors duration-300 shadow-md">
+                        <i class="fas fa-search mr-2"></i> Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Packages Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <h2 class="text-2xl font-bold text-gray-800">Featured Packages</h2>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-gray-500">Sort by:</span>
+                <select class="text-sm border-gray-300 rounded-lg focus:ring-wanderlust-primary focus:border-wanderlust-primary">
+                    <option>Popularity</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Duration</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for package in packages %}
+            <div class="package-card bg-white rounded-xl overflow-hidden shadow-card hover:shadow-card-hover border border-gray-100">
+                <div class="relative h-64">
+                    {% if package.images.all %}
+                        <img src="{{ package.images.first.image.url }}" alt="{{ package.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                            <i class="fas fa-camera text-4xl"></i>
+                        </div>
+                    {% endif %}
+                    <div class="absolute top-4 right-4 bg-wanderlust-primary text-white px-3 py-1 rounded-full text-sm font-semibold price-tag">
+                        ₹{{ package.price }}
+                    </div>
+                    <div class="absolute bottom-4 left-4 bg-white/90 text-wanderlust-dark px-3 py-1 rounded-full text-xs font-medium shadow-sm">
+                        <i class="fas fa-clock mr-1"></i> {{ package.duration }} days
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-gray-800">{{ package.name }}</h3>
+                        <span class="flex items-center text-amber-400">
+                            <i class="fas fa-star"></i>
+                            <span class="ml-1 text-gray-600">4.8</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center text-gray-500 mb-4">
+                        <i class="fas fa-map-marker-alt text-wanderlust-primary mr-2"></i>
+                        <span>{{ package.destination }}</span>
+                    </div>
+                    <p class="text-gray-600 mb-4 line-clamp-2">{{ package.description }}</p>
+                    <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                        <a href="{% url 'viewdetails' package.id %}" class="px-4 py-2 bg-wanderlust-primary hover:bg-wanderlust-dark text-white rounded-lg transition-colors duration-300 flex items-center shadow-md">
+                            <span>View Details</span>
+                            <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                        <span class="text-xs text-gray-500">
+                            <i class="fas fa-users mr-1"></i> Max {{ package.group_size }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-compass text-wanderlust-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold">Wanderlust</span>
+                    </div>
+                    <p class="text-gray-400">Creating unforgettable travel experiences since 2010.</p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4 text-gray-300">Explore</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'featured_packages' %}" class="text-gray-400 hover:text-white transition-colors duration-200">Tour Packages</a></li>
+                        <li><a href="{% url 'vendorsignin' %}" class="text-gray-400 hover:text-white transition-colors duration-200">join as vendor</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"></a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4 text-gray-300">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'aboutus' %}" class="text-gray-400 hover:text-white transition-colors duration-200">About Us</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-gray-400 hover:text-white transition-colors duration-200">Contact</a></li>
+                        <li><a href="{% url 'reviews' %}" class="text-gray-400 hover:text-white transition-colors duration-200">reviews</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"></a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4 text-gray-300">Connect</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="https://x.com/saikrisx?t=4sBSLZXHo_M0PIvD02kxeQ&s=09" class="text-gray-400 hover:text-white transition-colors duration-200 text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/_s4ikrish?igsh=MWJwMXhpaG9tanF3NQ==" class="text-gray-400 hover:text-white transition-colors duration-200 text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="https://youtu.be/FEDpW292UKA" class="text-gray-400 hover:text-white transition-colors duration-200 text-xl"><i class="fab fa-youtube"></i></a>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        <i class="fas fa-phone-alt mr-2 text-wanderlust-primary"></i> +91 9496764014
+                    </p>
+                    <p class="text-gray-400 text-sm mt-2">
+                        <i class="fas fa-envelope mr-2 text-wanderlust-primary"></i> info@wanderlust.com
+                    </p>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400 text-sm">
+                &copy; 2023 Wanderlust. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

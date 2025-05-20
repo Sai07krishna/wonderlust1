@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | Wanderlust</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .contact-gradient {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(5,150,105,0.2) 100%);
+        }
+        .contact-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .input-focus:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        .map-container {
+            height: 100%;
+            min-height: 300px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-compass text-emerald-600 text-2xl mr-2"></i>
+                        <span class="font-bold text-gray-800">Wanderlust</span>
+                    </a>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="{% url 'home' %}" class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">Home</a>
+                    <a href="{% url 'featured_packages' %}" class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">Tours</a>
+                    <a href="{% url 'aboutus' %}" class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm font-medium">About</a>
+                    <a href="{% url 'contact' %}" class="text-emerald-600 font-medium px-3 py-2 text-sm">Contact</a>
+        
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="pt-2 pb-3 space-y-1">
+                <a href="{% url 'home' %}" class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">Home</a>
+                <a href="{% url 'featured_packages' %}" class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">Tours</a>
+                <a href="{% url 'aboutus' %}" class="block px-3 py-2 text-base font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50">About</a>
+                <a href="{% url 'contact' %}" class="block px-3 py-2 text-base font-medium text-emerald-600 bg-emerald-50">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="contact-gradient">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
+                    <span class="block">Get In Touch</span>
+                    <span class="block text-emerald-600">We'd Love to Hear From You</span>
+                </h1>
+                <p class="mt-6 max-w-lg mx-auto text-lg text-gray-600">
+                    Have questions about our tours or need travel advice? Reach out to our team of experts.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Contact Form -->
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
+                <form method="post" action="{% url 'contact' %}" id="contact-form" class="space-y-6">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <input type="text" name="first_name" id="first-name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border input-focus" required>
+                        </div>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <input type="text" name="last_name" id="last-name" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border input-focus" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" id="email" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border input-focus" required>
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone (Optional)</label>
+                        <input type="tel" name="phone" id="phone" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border input-focus">
+                    </div>
+                    <div>
+                        <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                        <input type="subject" name="subject" id="subject" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border input-focus" required>
+                       
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <textarea id="message" name="message" rows="4" class="w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 py-2 px-3 border input-focus" required></textarea>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="newsletter" name="newsletter" type="checkbox" class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded">
+                        <label for="newsletter" class="ml-2 block text-sm text-gray-700">
+                            Subscribe to our newsletter for travel tips and special offers
+                        </label>
+                    </div>
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="space-y-8">
+                <!-- Contact Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="contact-card bg-white rounded-lg p-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0 bg-emerald-100 rounded-lg p-3">
+                                <i class="fas fa-map-marker-alt text-emerald-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Our Office</h3>
+                                <p class="mt-1 text-gray-600">
+                                    near TCS<br>
+                                    Infopark,Kochi
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-card bg-white rounded-lg p-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0 bg-emerald-100 rounded-lg p-3">
+                                <i class="fas fa-phone-alt text-emerald-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Call Us</h3>
+                                <p class="mt-1 text-gray-600">
+                                    +91 9496764014<br>
+                                    Mon-Fri, 9am-6pm IST
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-card bg-white rounded-lg p-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0 bg-emerald-100 rounded-lg p-3">
+                                <i class="fas fa-envelope text-emerald-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-medium text-gray-900">Email Us</h3>
+                                <p class="mt-1 text-gray-600">
+                                    wonderlust@gmail.com<br>
+                                    support@wanderlust.com
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Map -->
+               <div class="contact-card bg-white rounded-lg overflow-hidden">
+               <div class="map-container" style="height: 300px;">
+               <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d502922.53668608534!2d75.78708317343748!3d10.010059200000013!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080c9d4968ed6b%3A0xac7018beb464c0b!2sInfopark!5e0!3m2!1sen!2sin!4v1747331584162!5m2!1sen!2sin"
+                width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+                </div>
+                 </div>
+
+                <!-- Social Media -->
+                <div class="contact-card bg-white rounded-lg p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Connect With Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://x.com/saikrisx?t=4sBSLZXHo_M0PIvD02kxeQ&s=09" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-emerald-100 hover:text-emerald-600 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.instagram.com/_s4ikrish?igsh=MWJwMXhpaG9tanF3NQ==" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-emerald-100 hover:text-emerald-600 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/sai-krish-932b1a319?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"  class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-emerald-100 hover:text-emerald-600 transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCmiF2GcrQwFeiTdnKJ_023A" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-emerald-100 hover:text-emerald-600 transition">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="bg-gray-50 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Frequently Asked Questions</h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-600 mx-auto">
+                    Quick answers to common questions about Wanderlust
+                </p>
+            </div>
+            <div class="mt-12 max-w-3xl mx-auto">
+                <div class="space-y-4">
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none">
+                            <span class="text-lg font-medium text-gray-900">How do I book a tour?</span>
+                            <i class="fas fa-chevron-down text-emerald-600 transform transition-transform duration-200"></i>
+                        </button>
+                        <div class="px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                Booking a tour is easy! You can browse our available tours on our website, select your preferred dates, and complete the booking process online. If you need assistance, our customer service team is available 24/7 to help.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none">
+                            <span class="text-lg font-medium text-gray-900">What is your cancellation policy?</span>
+                            <i class="fas fa-chevron-down text-emerald-600 transform transition-transform duration-200"></i>
+                        </button>
+                        <div class="px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                We offer flexible cancellation policies that vary by tour. Most tours can be canceled for a full refund up to 30 days before departure. Please check the specific cancellation policy for your chosen tour during the booking process.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none">
+                            <span class="text-lg font-medium text-gray-900">Do you offer custom tour packages?</span>
+                            <i class="fas fa-chevron-down text-emerald-600 transform transition-transform duration-200"></i>
+                        </button>
+                        <div class="px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                Yes! Our travel experts can create a completely customized itinerary tailored to your interests, budget, and schedule. Contact us through the form above or call our customer service line to discuss your dream vacation.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                        <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none">
+                            <span class="text-lg font-medium text-gray-900">What safety measures do you have in place?</span>
+                            <i class="fas fa-chevron-down text-emerald-600 transform transition-transform duration-200"></i>
+                        </button>
+                        <div class="px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                Your safety is our top priority. All our tours follow strict safety protocols, including working with certified local guides, maintaining small group sizes, and ensuring all transportation meets international safety standards. We also provide 24/7 emergency support during your travels.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-center">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">Company</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="{% url 'aboutus' %}" class="text-base text-gray-400 hover:text-white">About</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-base text-gray-400 hover:text-white">Contacts</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">Support</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="{% url 'contact' %}" class="text-base text-gray-400 hover:text-white">Help Center</a></li>
+                        <li><a href="{% url 'aboutus' %}" class="text-base text-gray-400 hover:text-white">about us</a></li>
+                        <li><a href="{% url 'reviews' %}" class="text-base text-gray-400 hover:text-white">reviews</a></li>
+                        <li><a href="#" class="text-base text-gray-400 hover:text-white"></a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-300 tracking-wider uppercase">Connect</h3>
+                    <div class="mt-4 flex space-x-6">
+                        <a href="https://www.instagram.com/_s4ikrish?igsh=MWJwMXhpaG9tanF3NQ==" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://x.com/saikrisx?t=4sBSLZXHo_M0PIvD02kxeQ&s=09" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/sai-krish-932b1a319?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"  class="text-gray-400 hover:text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                    <div class="mt-6">
+                        <h4 class="text-sm font-medium text-gray-300">Subscribe to our newsletter</h4>
+                        <div class="mt-2 flex">
+                            <input type="email" placeholder="Your email" class="px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-l-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 w-full">
+                            <button class="bg-emerald-600 text-white px-4 py-2 rounded-r-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-8">
+                <p class="text-base text-gray-400 text-center">
+                    &copy; 2023 Wanderlust, Inc. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            // FAQ accordion functionality
+            const faqButtons = document.querySelectorAll('.bg-white.shadow-sm.rounded-lg button');
+            faqButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    // Toggle content visibility
+                    content.classList.toggle('hidden');
+                    
+                    // Rotate icon
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+            
+    </script>
+</body>
+</html>

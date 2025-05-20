@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Tours | Premium Travel Experiences</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --secondary: #10B981;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --accent: #F59E0B;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.95) 0%, rgba(16, 185, 129, 0.95) 100%);
+        }
+        
+        .package-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .destination-card {
+            position: relative;
+            overflow: hidden;
+            height: 20rem;
+            border-radius: 12px;
+        }
+        
+        .destination-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            border-radius: 12px;
+        }
+        
+        .animate-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .animate-fade-in.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .mobile-menu.open {
+            max-height: 500px;
+        }
+        
+        .nav-shadow {
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+        }
+        
+        .testimonial-card {
+            background: linear-gradient(to bottom right, white, #F9FAFB);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-card {
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline-white {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-white:hover {
+            transform: translateY(-2px);
+        }
+        
+        .feature-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+        
+        .section-title {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .featured-badge {
+            background: linear-gradient(to right, var(--accent), #F97316);
+            color: white;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="scroll-smooth">
+    <!-- Navigation -->
+    <nav class="bg-white sticky top-0 z-50 nav-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center">
+                        <i class="fas fa-plane-departure text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-primary">Wanderlust</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-dark hover:text-primary transition font-medium">Home</a>
+                    <a href="{% url 'featured_packages' %}" class="text-dark hover:text-primary transition font-medium">Packages</a>
+                    <a href="{% url 'aboutus' %}" class="text-dark hover:text-primary transition font-medium">About</a>
+                    <a href="{% url 'contact' %}" class="text-dark hover:text-primary transition font-medium">Contact</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if request.session.user_id %}
+                    <a href="{% url 'userprofile' %}" class="hidden md:inline-flex items-center text-dark hover:text-primary transition font-medium">
+                        <i class="fas fa-user-circle mr-2"></i> Profile
+                    </a>
+                    {% else %}
+                    <a href="{% url 'userlogin' %}" class="hidden md:inline-flex items-center text-dark hover:text-primary transition font-medium">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </a>
+                    {% endif %}
+                    <button id="mobile-menu-button" class="md:hidden text-dark focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-white">
+            <div class="px-4 pt-2 pb-4 space-y-2">
+                <a href="#" class="block px-4 py-3 rounded-lg font-medium text-dark hover:bg-gray-50 transition">Home</a>
+                <a href="{% url 'featured_packages' %}" class="block px-4 py-3 rounded-lg font-medium text-dark hover:bg-gray-50 transition">Packages</a>
+                <a href="{% url 'aboutus' %}" class="block px-4 py-3 rounded-lg font-medium text-dark hover:bg-gray-50 transition">About</a>
+                <a href="{% url 'contact' %}" class="block px-4 py-3 rounded-lg font-medium text-dark hover:bg-gray-50 transition">Contact</a>
+                <div class="pt-2 border-t border-gray-100">
+                    {% if request.session.user_id %}
+                    <a href="{% url 'userprofile' %}" class="block w-full text-left px-4 py-3 rounded-lg font-medium text-dark hover:bg-gray-50 transition">
+                        <i class="fas fa-user-circle mr-2"></i> Profile
+                    </a>
+                    {% else %}
+                    <a href="{% url 'userlogin' %}" class="block w-full text-center bg-primary text-white px-4 py-3 rounded-lg font-medium hover:bg-primary-dark transition mt-2">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white pt-24 pb-32 md:pt-32 md:pb-40 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="animate-fade-in">
+                    <span class="uppercase tracking-wider text-sm font-semibold mb-4 inline-block px-3 py-1 bg-white/10 rounded-full backdrop-blur-sm">Explore The World</span>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">Discover Your Next <span class="text-accent">Adventure</span></h1>
+                    <p class="text-lg md:text-xl mb-8 opacity-90 max-w-lg">Immerse yourself in breathtaking destinations with our expertly crafted tour packages designed for discerning travelers.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#featured-packages" class="btn-primary px-8 py-4 rounded-lg font-medium text-center shadow-lg">
+                            Explore Tours <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="https://youtu.be/FOvOxeb2TCg?si=ULlvKZtRBjcec2TD" class="btn-outline-white border-2 border-white text-white px-8 py-4 rounded-lg font-medium hover:bg-white hover:text-primary text-center flex items-center justify-center">
+                            <i class="fas fa-play mr-2"></i> Watch Video
+                        </a>
+                    </div>
+                </div>
+                <div class="animate-fade-in" style="transition-delay: 150ms;">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl transform rotate-1">
+                        <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1368&q=80" 
+                             alt="Travel Adventure" 
+                             class="w-full h-auto object-cover rounded-2xl">
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-accent rounded-lg shadow-lg flex items-center justify-center">
+                            <i class="fas fa-compass text-white text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="relative z-10 -mt-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="bg-white p-8 rounded-2xl shadow-xl animate-fade-in search-card" style="transition-delay: 300ms;">
+                <h2 class="text-2xl font-bold mb-6 text-center">Find Your Perfect Tour</h2>
+                <form class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Destination</label>
+                        <div class="relative">
+                            <i class="fas fa-map-marker-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <select class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary transition">
+                                <option>Any Destination</option>
+                                <option>Bali, Indonesia</option>
+                                <option>Paris, France</option>
+                                <option>Tokyo, Japan</option>
+                                <option>New York, USA</option>
+                                <option>Santorini, Greece</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Travel Date</label>
+                        <div class="relative">
+                            <i class="fas fa-calendar-alt absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="date" class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                        <div class="relative">
+                            <i class="fas fa-clock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <select class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary transition">
+                                <option>Any Duration</option>
+                                <option>1-3 Days</option>
+                                <option>4-7 Days</option>
+                                <option>8+ Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="btn-primary w-full h-[52px] rounded-lg font-medium shadow-md flex items-center justify-center">
+                            <i class="fas fa-search mr-2"></i> Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="section-title text-3xl font-bold">Popular Destinations</span>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4">Explore our most sought-after travel destinations curated for unforgettable experiences</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="destination-card relative rounded-xl overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1338&q=80" 
+                         alt="Bali" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-white font-bold text-xl mb-1">Bali, Indonesia</h3>
+                                <p class="text-gray-200 text-sm mb-3">Tropical paradise with beautiful beaches</p>
+                            </div>
+                            <span class="bg-primary text-white text-xs font-semibold px-2 py-1 rounded">Popular</span>
+                        </div>
+                        
+                    </div>
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
+                </div>
+                
+                <div class="destination-card relative rounded-xl overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1431274172761-fca41d930114?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                         alt="Paris" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-white font-bold text-xl mb-1">Paris, France</h3>
+                                <p class="text-gray-200 text-sm mb-3">The city of love and iconic landmarks</p>
+                            </div>
+                            <span class="bg-primary text-white text-xs font-semibold px-2 py-1 rounded">Trending</span>
+                        </div>
+                    
+                    </div>
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
+                </div>
+                
+                <div class="destination-card relative rounded-xl overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1153&q=80" 
+                         alt="Tokyo" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-white font-bold text-xl mb-1">Tokyo, Japan</h3>
+                                <p class="text-gray-200 text-sm mb-3">Vibrant metropolis blending tradition</p>
+                            </div>
+                            <span class="bg-accent text-white text-xs font-semibold px-2 py-1 rounded">New</span>
+                        </div>
+                    </div>
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
+                </div>
+                
+                <div class="destination-card relative rounded-xl overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1483729558449-99ef09a8c325?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                         alt="Santorini" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-white font-bold text-xl mb-1">Santorini, Greece</h3>
+                                <p class="text-gray-200 text-sm mb-3">Stunning white-washed buildings</p>
+                            </div>
+                            <span class="bg-primary text-white text-xs font-semibold px-2 py-1 rounded">Luxury</span>
+                        </div>
+                        
+                    </div>
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition"></div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="{% url 'featured_packages' %}" class="inline-flex items-center text-primary font-medium hover:underline group">
+                    Explore all destinations<i class="fas fa-chevron-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Packages -->
+    <section id="featured-packages" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="section-title text-3xl font-bold">Featured Packages</span>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4">Handpicked tours designed to deliver exceptional travel experiences</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for package in featured_packages %}
+                <div class="package-card bg-white">
+                    <div class="relative">
+                        {% if package.images.first %}
+                            <img src="{{ package.images.first.image.url }}" alt="{{ package.name }}" class="w-full h-64 object-cover">
+                        {% else %}
+                            <div class="w-full h-64 bg-gray-100 flex items-center justify-center text-gray-400">
+                                <i class="fas fa-camera text-4xl"></i>
+                            </div>
+                        {% endif %}
+                        <div class="absolute top-4 right-4">
+                            <span class="featured-badge">Featured</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 bg-white/90 text-dark px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-clock mr-1"></i> {{ package.duration }} Days
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="font-bold text-xl text-dark">{{ package.name }}</h3>
+                            <div class="text-right">
+                                <span class="text-primary font-bold text-xl">₹{{ package.price }}</span>
+                                <span class="block text-gray-500 text-xs">per person</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400 mr-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-gray-500 text-sm">4.7 (24 reviews)</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-5 line-clamp-2">{{ package.description }}</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-gray-400 mr-2"></i>
+                                <span class="text-gray-600 text-sm">{{ package.destination }}</span>
+                            </div>
+                            <a href="{% url 'viewdetails' package.id %}" class="text-primary text-sm font-medium hover:underline flex items-center">
+                                Details <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="{% url 'featured_packages' %}" class="btn-primary inline-flex items-center px-8 py-4 rounded-lg font-medium shadow-lg">
+                    View All Packages <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="section-title text-3xl font-bold">Why Choose Wanderlust</span>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4">We're committed to providing exceptional travel experiences that exceed expectations</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center hover:shadow-md transition">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">Trusted Tours</h3>
+                    <p class="text-gray-600">All our packages are carefully vetted to ensure the highest quality and safety standards for your peace of mind.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center hover:shadow-md transition">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">24/7 Support</h3>
+                    <p class="text-gray-600">Our dedicated travel concierge team is available around the clock to assist you throughout your journey.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center hover:shadow-md transition">
+                    <div class="feature-icon">
+                        <i class="fas fa-tag text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">Best Price Guarantee</h3>
+                    <p class="text-gray-600">We offer competitive prices with transparent pricing and no hidden fees, guaranteed.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center hover:shadow-md transition">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">Global Network</h3>
+                    <p class="text-gray-600">Access to exclusive experiences through our worldwide network of trusted local partners.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center hover:shadow-md transition">
+                    <div class="feature-icon">
+                        <i class="fas fa-star text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">Premium Experiences</h3>
+                    <p class="text-gray-600">Curated itineraries that go beyond typical tourist attractions for authentic local experiences.</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-xl shadow-sm text-center hover:shadow-md transition">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="font-bold text-xl mb-3">Sustainable Travel</h3>
+                    <p class="text-gray-600">We're committed to responsible tourism that benefits local communities and preserves cultures.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="section-title text-3xl font-bold">Traveler Stories</span>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-4">Hear from our community of satisfied travelers about their experiences</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full overflow-hidden mr-4 border-2 border-white shadow">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah Johnson" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Sarah Johnson</h4>
+                            <p class="text-gray-500 text-sm">Bali Adventure, June 2023</p>
+                        </div>
+                    </div>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"The Bali tour package exceeded all expectations! Every detail was perfectly organized, from the luxurious accommodations to the knowledgeable local guides. The cultural experiences were authentic and the beaches breathtaking. Will definitely book with Wanderlust again!"</p>
+                </div>
+                
+                <div class="testimonial-card p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full overflow-hidden mr-4 border-2 border-white shadow">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Michael Chen" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Michael Chen</h4>
+                            <p class="text-gray-500 text-sm">European Explorer, April 2023</p>
+                        </div>
+                    </div>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"Wanderlust made our European tour seamless and stress-free. The boutique hotels were charming, the transportation between cities was efficient, and the restaurant recommendations were spot on. Their attention to detail made this our best vacation yet!"</p>
+                </div>
+                
+                <div class="testimonial-card p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="w-16 h-16 rounded-full overflow-hidden mr-4 border-2 border-white shadow">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emma Rodriguez" class="w-full h-full object-cover">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Emma Rodriguez</h4>
+                            <p class="text-gray-500 text-sm">Japan Cherry Blossom, March 2023</p>
+                        </div>
+                    </div>
+                    <div class="flex text-yellow-400 mb-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="text-gray-600 italic">"The Japan cherry blossom tour was absolutely magical. Wanderlust's local guide knew all the hidden spots for the best views, and the ryokan stay was a cultural experience we'll never forget. Everything was perfectly timed with the blooms!"</p>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <a href="{% url 'reviews' %}" class="inline-flex items-center text-primary font-medium hover:underline group">
+                    add your review <i class="fas fa-chevron-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="relative py-24 bg-primary text-white overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1508672019048-805c876b67e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready for Your Next Adventure?</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto opacity-90">Join our community of happy travelers who have discovered the world with Wanderlust Tours.</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="{% url 'featured_packages' %}" class="btn-primary px-8 py-4 rounded-lg font-medium shadow-lg inline-flex items-center justify-center">
+                    <i class="fas fa-calendar-alt mr-2"></i> Book Now
+                </a>
+                <a href="{% url 'contact' %}" class="btn-outline-white border-2 border-white text-white px-8 py-4 rounded-lg font-medium hover:bg-white hover:text-primary inline-flex items-center justify-center">
+                    <i class="fas fa-envelope mr-2"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-plane-departure text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-white">Wanderlust</span>
+                    </div>
+                    <p class="text-gray-400 mb-6">Crafting unforgettable travel experiences that inspire and delight our clients.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-5">Explore</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-primary"></i> Home
+                        </a></li>
+                        <li><a href="{% url 'featured_packages' %}" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-primary"></i> Packages
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-primary"></i> Destinations
+                        </a></li>
+                        <li><a href="{% url 'aboutus' %}" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-primary"></i> About Us
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-5">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'contact' %}" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-primary"></i> Contact
+                        </a></li>
+                        <li><a href="{% url 'terms' %}" class="text-gray-400 hover:text-white transition flex items-center">
+                            <i class="fas fa-chevron-right text-xs mr-2 text-primary"></i> Terms
+                        </a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-5">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe for travel inspiration and exclusive offers.</p>
+                    <form class="mb-4">
+                        <div class="flex">
+                            <input type="email" placeholder="Your email" class="px-4 py-3 rounded-l-lg w-full text-dark focus:outline-none focus:ring-2 focus:ring-primary">
+                            <button type="submit" class="bg-primary px-4 py-3 rounded-r-lg hover:bg-primary-dark transition">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <p class="text-gray-400 text-sm">
+                        <i class="fas fa-phone-alt mr-2 text-primary"></i> +91 9496764014
+                    </p>
+                    <p class="text-gray-400 text-sm mt-2">
+                        <i class="fas fa-envelope mr-2 text-primary"></i> info@wanderlust.com
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Wanderlust Tours. All rights reserved.</p>
+                <p class="mt-2 text-sm">Crafted with <i class="fas fa-heart text-primary"></i> for travelers</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('open');
+            const icon = mobileMenuButton.querySelector('i');
+            if (mobileMenu.classList.contains('open')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Animate elements on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-fade-in');
+            elements.forEach(el => {
+                const elTop = el.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (elTop < windowHeight - 100) {
+                    el.classList.add('show');
+                }
+            });
+        }
+        
+        // Run once on load
+        document.addEventListener('DOMContentLoaded', animateOnScroll);
+        
+        // Run on scroll with throttle
+        let isScrolling;
+        window.addEventListener('scroll', function() {
+            window.clearTimeout(isScrolling);
+            isScrolling = setTimeout(animateOnScroll, 50);
+        }, false);
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

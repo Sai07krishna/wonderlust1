@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings | Wanderlust</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-lighter: #93c5fd;
+            --primary-lightest: #dbeafe;
+            --secondary: #7c3aed;
+            --accent: #f59e0b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 4px 0 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .settings-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .settings-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        .tab-active {
+            position: relative;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        .tab-active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        .input-field {
+            transition: all 0.2s ease;
+            border: 1px solid #e2e8f0;
+        }
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        }
+        .sidebar-icon {
+            transition: all 0.2s ease;
+        }
+        .sidebar-icon:hover {
+            transform: scale(1.1);
+            color: var(--primary);
+        }
+        .active-icon {
+            color: var(--primary);
+            background-color: var(--primary-lightest);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-16 md:w-20 h-screen sticky top-0 flex flex-col z-10 sidebar">
+            <div class="p-4 flex items-center justify-center border-b border-gray-200">
+                <i class="fas fa-compass text-blue-600 text-2xl"></i>
+            </div>
+            <nav class="flex-1 flex flex-col items-center pt-8 space-y-8">
+                <a href="{% url 'userprofile' %}" class="p-3 rounded-lg sidebar-icon text-gray-500 hover:text-blue-600" title="Dashboard">
+                    <i class="fas fa-home text-xl"></i>
+                </a>
+                <a href="#" class="p-3 rounded-lg sidebar-icon text-gray-500 hover:text-blue-600" title="Trips">
+                    <i class="fas fa-suitcase text-xl"></i>
+                </a>
+                <a href="#" class="p-3 rounded-lg sidebar-icon active-icon" title="Settings">
+                    <i class="fas fa-cog text-xl"></i>
+                </a>
+            </nav>
+            <div class="p-4 mt-auto">
+                <a href="{% url 'userlogout' %}" class="p-3 rounded-lg sidebar-icon text-gray-500 hover:text-blue-600 block" title="Logout">
+                    <i class="fas fa-sign-out-alt text-xl"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-4 md:p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Account Settings</h1>
+                    <p class="text-sm text-gray-500 mt-1">Manage your account preferences and security</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-user text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div class="mb-8">
+                <nav class="flex space-x-8 border-b border-gray-200">
+                    <button class="py-3 px-1 tab-active text-sm font-medium">
+                        <i class="fas fa-user-circle mr-2"></i>Profile
+                    </button>
+                    <a href="{% url 'view_booked' %}" class="py-3 px-1 text-gray-500 hover:text-blue-600 text-sm font-medium flex items-center">
+                     <i class="fas fa-lock mr-2"></i>Bookings
+                    </a>
+
+                </nav>
+            </div>
+
+            <!-- Profile Settings -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="settings-card p-8">
+                        <div class="flex items-center justify-between mb-8">
+                            <h2 class="text-xl font-semibold text-gray-800">Personal Information</h2>
+                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Active</span>
+                        </div>
+                        
+                        <form method="post" class="space-y-6">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">First name</label>
+                                    <div class="relative">
+                                        <input type="text" name="first_name" value="{{ form.first_name.value }}" 
+                                            class="w-full px-4 py-3 input-field rounded-lg focus:outline-none" 
+                                            placeholder="Enter your first name" />
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                            <i class="fas fa-user text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Last name</label>
+                                    <div class="relative">
+                                        <input type="text" name="last_name" value="{{ form.last_name.value }}" 
+                                            class="w-full px-4 py-3 input-field rounded-lg focus:outline-none" 
+                                            placeholder="Enter your last name" />
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                            <i class="fas fa-user text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone number</label>
+                                <div class="relative">
+                                    <input type="text" name="phone" value="{{ form.phone.value }}" 
+                                        class="w-full px-4 py-3 input-field rounded-lg focus:outline-none" 
+                                        placeholder="+91 9876543210" />
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-phone text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                                <div class="relative">
+                                    <input type="date" name="dob" value="{{ form.dob.value }}" 
+                                        class="w-full px-4 py-3 input-field rounded-lg focus:outline-none" />
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-calendar-day text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email address</label>
+                                <div class="relative">
+                                    <input type="email" name="email" value="{{ form.email.value }}" 
+                                        class="w-full px-4 py-3 input-field rounded-lg focus:outline-none" 
+                                        placeholder="your@email.com" />
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-envelope text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Travel Preferences</label>
+                                <div class="relative">
+                                    <input type="text" name="preferences" value="{{ form.preferences.value }}" 
+                                        class="w-full px-4 py-3 input-field rounded-lg focus:outline-none" 
+                                        placeholder="Adventure, Luxury, Family, etc." />
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-heart text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Travel Budget</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <span class="text-gray-500">₹</span>
+                                    </div>
+                                    <input type="text" name="budget" value="{{ form.budget.value }}" 
+                                        class="w-full pl-8 px-4 py-3 input-field rounded-lg focus:outline-none" 
+                                        placeholder="Your typical travel budget" />
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                        <i class="fas fa-wallet text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 flex justify-end">
+                                <button type="submit" class="btn-primary text-white px-6 py-3 rounded-lg font-medium">
+                                    <i class="fas fa-save mr-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Profile Card -->
+                <div class="lg:col-span-1">
+                    <div class="settings-card p-6">
+                        <div class="flex flex-col items-center">
+                            <div class="relative mb-4">
+                                <div class="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-user text-blue-600 text-3xl"></i>
+                                </div>
+                                <button class="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md hover:bg-blue-50">
+                                    <i class="fas fa-camera text-blue-600 text-sm"></i>
+                                </button>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800">{{ form.first_name.value }} {{ form.last_name.value }}</h3>
+                            <p class="text-sm text-gray-500 mt-1">{{ form.email.value }}</p>
+                            
+                            <div class="w-full mt-6 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">member since</span>
+                                    <span class="text-sm font-medium"></span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-500">Trips booked</span>
+                                    <span class="text-sm font-medium"></span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality with animation
+        const tabs = document.querySelectorAll('nav button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => {
+                    t.classList.remove('tab-active', 'text-blue-600');
+                    t.classList.add('text-gray-500');
+                });
+                this.classList.add('tab-active', 'text-blue-600');
+                this.classList.remove('text-gray-500');
+                
+                // Add animation class
+                this.classList.add('animate-pulse');
+                setTimeout(() => {
+                    this.classList.remove('animate-pulse');
+                }, 300);
+            });
+        });
+
+        // Input field animations
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-blue-500', 'rounded-lg');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-blue-500', 'rounded-lg');
+            });
+        });
+    </script>
+</body>
+</html>

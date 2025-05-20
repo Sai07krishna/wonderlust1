@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ package.name }} | Vendor Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .sidebar {
+            width: 80px;
+            transition: all 0.3s ease;
+        }
+        .sidebar:hover {
+            width: 240px;
+        }
+        .status-badge {
+            transition: all 0.3s ease;
+        }
+        .status-badge.pending {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .status-badge.approved {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        .status-badge.rejected {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex">
+    <!-- Vendor Sidebar -->
+    <div class="sidebar bg-white h-screen sticky top-0 shadow-sm flex flex-col">
+        <div class="p-4 flex items-center justify-center border-b border-gray-200">
+            <i class="fas fa-briefcase text-emerald-600 text-2xl"></i>
+        </div>
+        <nav class="flex-1 flex flex-col items-center pt-6 space-y-8 overflow-hidden">
+            <a href="{% url 'vendordash' %}" class="p-3 rounded-lg text-gray-500 hover:bg-gray-100" title="Dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span class="ml-2 hidden">Dashboard</span>
+            </a>
+            <a href="{% url 'package_details' package.id %}" class="p-3 rounded-lg nav-link active text-emerald-600" title="Packages">
+                <i class="fas fa-suitcase"></i>
+                <span class="ml-2 hidden">Packages</span>
+            </a>
+            <a href="/vendor/bookings" class="p-3 rounded-lg text-gray-500 hover:bg-gray-100" title="Bookings">
+                <i class="fas fa-calendar-check"></i>
+                <span class="ml-2 hidden">Bookings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Package Details</h1>
+                <p class="text-sm text-gray-500">Manage your tour package</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="{% url 'update_package' package.id %}" 
+                   class="px-4 py-2 bg-white border border-emerald-600 text-emerald-600 rounded-lg hover:bg-emerald-50 flex items-center">
+                    <i class="fas fa-pencil-alt mr-2"></i> Edit
+                </a>
+                <a href="{% url 'vendordash' %}" 
+                   class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Alert -->
+        <div class="mb-6">
+            <div class="flex items-center p-4 rounded-lg 
+                     {% if package.status == 'approved' %}bg-green-50 text-green-800
+                     {% elif package.status == 'pending' %}bg-amber-50 text-amber-800
+                     {% else %}bg-red-50 text-red-800{% endif %}">
+                <i class="fas 
+                   {% if package.status == 'approved' %}fa-check-circle
+                   {% elif package.status == 'pending' %}fa-clock
+                   {% else %}fa-times-circle{% endif %} 
+                   mr-3 text-xl"></i>
+                <div>
+                    <h3 class="font-medium">
+                        {% if package.status == 'approved' %}
+                        This package is approved and visible to customers
+                        {% elif package.status == 'pending' %}
+                        This package is pending admin approval
+                        {% else %}
+                        This package was rejected by admin
+                        {% endif %}
+                    </h3>
+                    {% if package.status == 'rejected' %}
+                    <p class="text-sm mt-1">Contact support for more information</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Package Details Card -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Main Details -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">{{ package.name }}</h2>
+                        <div class="flex items-center mt-2 text-gray-600">
+                            <i class="fas fa-map-marker-alt text-emerald-500 mr-2"></i>
+                            <span>{{ package.destination }}</span>
+                        </div>
+                    </div>
+                    <span class="status-badge {{ package.status }} px-3 py-1 rounded-full text-xs font-medium">
+                        {{ package.get_status_display }}
+                    </span>
+                </div>
+
+                <!-- Images -->
+               <!-- Images -->
+        <div class="mb-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-3">Package Images</h3>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {% for image in package.images.all %}
+    <div class="relative group">
+        <img src="{{ image.image.url }}" 
+             alt="{{ package.name }}" 
+             class="w-full h-32 object-cover rounded-lg">
+        <button class="absolute top-2 right-2 p-1 bg-white rounded-full text-red-500 opacity-0 group-hover:opacity-100 transition">
+            <i class="fas fa-trash text-xs"></i>
+        </button>
+    </div>
+{% empty %}
+    <div class="col-span-full text-center py-8 text-gray-400">
+        <i class="fas fa-image text-3xl mb-2"></i>
+        <p>No images uploaded</p>
+    </div>
+{% endfor %}
+
+    </div>
+</div>
+
+                <!-- Description -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Description</h3>
+                    <div class="prose max-w-none text-gray-600">
+                        {{ package.description|linebreaks }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats and Actions -->
+            <div class="space-y-6">
+                <!-- Pricing Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Pricing & Details</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Price:</span>
+                            <span class="font-medium">₹{{ package.price|floatformat:"0" }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Duration:</span>
+                            <span class="font-medium">{{ package.duration }} days</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Group Size:</span>
+                            <span class="font-medium">Max {{ package.group_size }} people</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Created:</span>
+                            <span class="font-medium">{{ package.created_at|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+
+               <!-- Stats Card -->
+<div class="bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Package Statistics</h3>
+    <div class="space-y-4">
+        <div>
+            <p class="text-sm text-gray-500">Views</p>
+            <p class="text-xl font-bold">{{ package.views_count }}</p>
+        </div>
+        <div>
+            <p class="text-sm text-gray-500">Bookings</p>
+            <p class="text-xl font-bold">{{ booking_count }}</p>
+        </div>
+    </div>
+</div>
+
+
+               <!-- Actions Card -->
+<div class="bg-white rounded-xl shadow-sm p-6">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Package Actions</h3>
+    <div class="space-y-3">
+        
+        <!-- Make Private -->
+        {% if package.status == 'approved' %}
+        <a href="{% url 'make_private' package.pk %}" 
+           class="block w-full px-4 py-2 bg-amber-100 text-amber-800 rounded-lg hover:bg-amber-200 flex items-center justify-center">
+            <i class="fas fa-eye-slash mr-2"></i> Make Private
+        </a>
+        {% else %}
+        <!-- Make Public -->
+        <a href="{% url 'make_public' package.pk %}" 
+           class="block w-full px-4 py-2 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 flex items-center justify-center">
+            <i class="fas fa-eye mr-2"></i> Make Public
+        </a>
+        {% endif %}
+
+        <!-- Delete -->
+        <a href="{% url 'delete_package' package.pk %}" 
+           onclick="return confirm('Are you sure you want to delete this package?');"
+           class="block w-full px-4 py-2 bg-red-100 text-red-800 rounded-lg hover:bg-red-200 flex items-center justify-center">
+            <i class="fas fa-trash mr-2"></i> Delete Package
+        </a>
+
+    </div>
+</div>
+
+
+<!-- Bookings Section -->
+<div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold text-gray-800">Recent Bookings</h2>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guests</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for booking in recent_bookings %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#BK-{{ booking.id }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ booking.user.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ booking.travel_date|date:"M d, Y" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ booking.travelers }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{{ booking.total_price|floatformat:"0" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if booking.payment_status == "Success" or booking.is_paid %}
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Confirmed</span>
+                        {% else %}
+                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">No recent bookings.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    <script>
+        // Sidebar expand on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarItems = document.querySelectorAll('.sidebar span');
+            
+            sidebar.addEventListener('mouseenter', function() {
+                sidebarItems.forEach(item => {
+                    item.classList.remove('hidden');
+                });
+            });
+            
+            sidebar.addEventListener('mouseleave', function() {
+                sidebarItems.forEach(item => {
+                    item.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

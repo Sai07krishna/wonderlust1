@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation & Payment | Wanderlust Tours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        .confirmation-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .payment-btn {
+            transition: all 0.3s ease;
+            background-image: linear-gradient(to right, #0d9488, #14b8a6);
+        }
+        .payment-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.3);
+        }
+        .tick-icon {
+            background-image: linear-gradient(to right, #0d9488, #14b8a6);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <div class="confirmation-card bg-white rounded-xl overflow-hidden">
+            <!-- Header -->
+            <div class="bg-teal-600 p-6 text-center">
+                <div class="w-20 h-20 mx-auto rounded-full tick-icon flex items-center justify-center mb-4">
+                    <i class="fas fa-check text-white text-3xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-white">Booking Confirmed!</h1>
+                <p class="text-teal-100 mt-2">Your booking is ready for payment</p>
+            </div>
+
+            <!-- Booking Details -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-500">Booking ID</span>
+                    <span class="font-medium">{{ booking.id }}</span>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-500">Package</span>
+                    <span class="font-medium">{{ booking.package.name }}</span>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-500">Date</span>
+                    <span class="font-medium">{{ booking.travel_date|date:"d M Y" }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-500">Persons</span>
+                    <span class="font-medium">{{ booking.number_of_persons }}</span>
+                </div>
+            </div>
+
+            <!-- Total Price -->
+            <div class="p-6 bg-gray-50">
+                <div class="flex justify-between items-center">
+                    <span class="text-lg font-semibold">Total Amount</span>
+                    <span class="text-2xl font-bold text-teal-600">₹{{ booking.total_price }}</span>
+                </div>
+            </div>
+
+            <!-- Payment Section -->
+            <div class="p-6">
+                <h3 class="text-lg font-medium mb-4 flex items-center">
+                    <i class="fas fa-credit-card mr-2 text-teal-600"></i> Secure Payment
+                </h3>
+                <p class="text-gray-600 text-sm mb-6">
+                    Complete your booking by making the payment. We use Razorpay for secure transactions.
+                </p>
+                
+                <form id="payment-form" method="POST">
+                    {% csrf_token %}
+                    <button id="rzp-button" type="button" class="payment-btn w-full py-3 px-4 rounded-lg text-white font-bold flex items-center justify-center">
+                        <i class="fas fa-lock mr-2"></i> Pay Now - ₹{{ booking.total_price }}
+                    </button>
+                </form>
+
+                <div class="mt-4 flex items-center text-sm text-gray-500">
+                    <i class="fas fa-shield-alt mr-2 text-teal-600"></i>
+                    <span>100% Secure Payment</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Info -->
+        <div class="mt-6 text-center text-sm text-gray-500">
+            <p>Need help? <a href="#" class="text-teal-600 hover:underline">Contact our support team</a></p>
+        </div>
+    </div>
+    <form id="payment-success-form" method="POST" action="{% url 'payment_success' booking.id %}">
+  {% csrf_token %}
+  <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+</form>
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        const options = {
+            "key": "{{ razorpay_key_id }}",  // Razorpay public key
+            "amount": "{{ amount }}",        // Amount in paise
+            "currency": "INR",
+            "name": "Wanderlust Tours",
+            "description": "Payment for Booking #{{ booking.id }}",
+            "order_id": "{{ razorpay_order_id }}",  // From backend
+            "handler": function (response) {
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('payment-success-form').submit();
+        },
+            "prefill": {
+                "name": "{{ booking.name }}",
+                "email": "{{ booking.email }}",
+                "contact": "{{ booking.phone }}"
+            },
+            "theme": {
+                "color": "#0d9488"
+            },
+            "modal": {
+                "ondismiss": function(){
+                    // Optional: Handle when user closes the payment form
+                    console.log("Payment window closed");
+                }
+            }
+        };
+
+        const rzp1 = new Razorpay(options);
+        
+        document.getElementById('rzp-button').onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        };
+
+        // Optional: Auto-open payment modal (remove if not needed)
+        // window.onload = function() {
+        //     document.getElementById('rzp-button').click();
+        // };
+    </script>
+</body>
+</html>

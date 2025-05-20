@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful | Wanderlust Tours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0fdfa;
+        }
+        .success-animation {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f59e0b;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <!-- Confetti animation container -->
+        <div id="confetti-container" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
+        
+        <!-- Success card -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Header with gradient background -->
+            <div class="bg-gradient-to-r from-teal-600 to-emerald-500 p-8 text-center">
+                <div class="success-animation inline-block mb-4">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-white flex items-center justify-center shadow-lg">
+                        <i class="fas fa-check-circle text-5xl text-emerald-500"></i>
+                    </div>
+                </div>
+                <h1 class="text-3xl font-bold text-white">Payment Successful!</h1>
+                <p class="text-teal-100 mt-2">Your booking is now confirmed</p>
+            </div>
+
+            <!-- Booking details -->
+            <div class="p-8">
+                <div class="space-y-4 mb-8">
+                    <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                        <span class="text-gray-500">Booking ID</span>
+                        <span class="font-medium text-gray-800">{{ booking.id }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                        <span class="text-gray-500">Package</span>
+                        <span class="font-medium text-gray-800">{{ booking.package.name }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                        <span class="text-gray-500">Travel Date</span>
+                        <span class="font-medium text-gray-800">{{ booking.travel_date|date:"d M Y" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                        <span class="text-gray-500">Persons</span>
+                        <span class="font-medium text-gray-800">{{ booking.number_of_persons }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-4">
+                        <span class="text-lg font-semibold">Total Paid</span>
+                        <span class="text-2xl font-bold text-emerald-600">₹{{ booking.total_price }}</span>
+                    </div>
+                </div>
+
+                <!-- Download and next steps -->
+                <div class="bg-teal-50 rounded-lg p-4 mb-8">
+                    <h3 class="font-medium text-teal-800 mb-2 flex items-center">
+                        <i class="fas fa-file-invoice mr-2"></i> What's next?
+                    </h3>
+                    <p class="text-sm text-teal-700">
+                        Your booking confirmation has been sent to {{ booking.email }}. 
+                        You can also <a href="#" class="text-teal-600 font-medium hover:underline">download your invoice</a>.
+                    </p>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'featured_packages' %}" class="flex-1 bg-white border border-teal-600 text-teal-600 hover:bg-teal-50 font-medium py-3 px-6 rounded-lg text-center transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Browse More Packages
+                    </a>
+                    <a href="{% url 'view_booked' %}" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-6 rounded-lg text-center transition">
+                        <i class="fas fa-calendar-check mr-2"></i> View My Bookings
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support info -->
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>Need help? <a href="#" class="text-teal-600 hover:underline">Contact our support team</a></p>
+            <p class="mt-1">Or call us at <span class="font-medium">+91 98765 43210</span></p>
+        </div>
+    </div>
+
+    <!-- Confetti animation script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create confetti effect
+            const confettiContainer = document.getElementById('confetti-container');
+            const colors = ['#0d9488', '#10b981', '#f59e0b', '#ec4899', '#6366f1'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = -10 + 'px';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                const animationDuration = Math.random() * 3 + 2;
+                confetti.style.animation = `fall ${animationDuration}s linear forwards`;
+                
+                // Random size
+                const size = Math.random() * 10 + 5;
+                confetti.style.width = size + 'px';
+                confetti.style.height = size + 'px';
+                
+                // Random shape
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                
+                confettiContainer.appendChild(confetti);
+            }
+
+            // Add falling animation
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(100vh) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
