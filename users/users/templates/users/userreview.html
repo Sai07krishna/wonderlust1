@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Reviews</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .rating-input {
+            display: none;
+        }
+        .rating-label {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #e2e8f0;
+            transition: all 0.2s;
+        }
+        .rating-label:hover,
+        .rating-label:hover ~ .rating-label,
+        .rating-input:checked ~ .rating-label {
+            color: #f59e0b;
+        }
+        .rating-input:checked + .rating-label {
+            color: #f59e0b;
+            transform: scale(1.1);
+        }
+        .review-card {
+            transition: all 0.3s ease;
+        }
+        .review-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-3">Customer Reviews</h1>
+            <p class="text-lg text-gray-600">Share your experience with our community</p>
+        </div>
+
+        <!-- Review Submission Card -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-12 transform transition-all duration-300 hover:shadow-xl">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                <i class="fas fa-pen-alt text-blue-500 mr-3"></i>
+                Write Your Review
+            </h2>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Name Field -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                    <div class="relative">
+                        <input type="text" name="name" id="name" required
+                               class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                               placeholder="Enter your name">
+                        <i class="fas fa-user absolute right-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Rating Field -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>
+                    <div class="flex items-center space-x-2">
+                        {% for i in "54321" %}
+                        <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}" 
+                               class="rating-input" {% if forloop.first %}checked{% endif %}>
+                        <label for="star{{ i }}" class="rating-label">★</label>
+                        {% endfor %}
+                        <span class="ml-2 text-sm text-gray-500" id="rating-value">5 stars</span>
+                    </div>
+                </div>
+                
+                <!-- Review Field -->
+                <div>
+                    <label for="review" class="block text-sm font-medium text-gray-700 mb-2">Your Experience</label>
+                    <textarea name="review" id="review" rows="4" required
+                              class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                              placeholder="Tell us about your experience..."></textarea>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 flex items-center justify-center">
+                    <i class="fas fa-paper-plane mr-2"></i>
+                    Submit Review
+                </button>
+            </form>
+        </div>
+
+        <!-- Reviews Display Section -->
+        <div>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-8 flex items-center">
+                <i class="fas fa-comments text-blue-500 mr-3"></i>
+                Customer Feedback
+                <span class="ml-auto text-sm font-normal bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+                    {{ reviews.count }} reviews
+                </span>
+            </h2>
+            
+            {% if reviews %}
+            <div class="space-y-6">
+                {% for review in reviews %}
+                <div class="review-card bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-bold text-gray-800">{{ review.name }}</h3>
+                            <p class="text-sm text-gray-500">{{ review.date|date:"F j, Y" }}</p>
+                        </div>
+                        <div class="flex items-center bg-amber-50 px-3 py-1 rounded-full">
+                            <div class="text-amber-400 mr-1">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-xs font-medium text-amber-800">{{ review.rating }}.0</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 leading-relaxed">{{ review.review }}</p>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-100 flex space-x-4">
+                        <button class="text-sm text-gray-500 hover:text-blue-500 transition flex items-center">
+                            <i class="far fa-thumbs-up mr-1"></i> Helpful
+                        </button>
+                        <button class="text-sm text-gray-500 hover:text-blue-500 transition flex items-center">
+                            <i class="far fa-comment mr-1"></i> Comment
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="bg-white rounded-xl shadow-md p-8 text-center">
+                <i class="fas fa-comment-slash text-4xl text-gray-300 mb-4"></i>
+                <h3 class="text-lg font-medium text-gray-700 mb-2">No Reviews Yet</h3>
+                <p class="text-gray-500">Be the first to share your thoughts!</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Update rating value display
+        document.querySelectorAll('.rating-input').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('rating-value').textContent = this.value + ' stars';
+            });
+        });
+        
+        // Add animation to review cards when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.review-card').forEach(card => {
+            card.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-500');
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
